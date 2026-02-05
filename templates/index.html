@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SatyaCheck</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <input type="checkbox" id="dark-toggle" hidden />
+    <label for="dark-toggle" class="dark-toggle-btn">🌙 Dark Mode</label>
+    <div class="page-content">
+      <main class="page">
+        <section class="card">
+          <header class="header">
+            <h1>SatyaCheck</h1>
+            <p>Real-time fake news screening with transparent results.</p>
+          </header>
+
+          <form method="POST" class="form">
+            <label for="newsInput" class="label">Paste news text OR article URL</label>
+            <textarea
+              id="newsInput"
+              name="news"
+              placeholder="Paste news article text OR paste a news article URL here..."
+            >{{ result.input_text if result else '' }}</textarea>
+            <p class="textarea-disclaimer">
+              SatyaCheck is an AI-assisted tool and may occasionally make mistakes.
+              Always verify important news from trusted sources.
+            </p>
+            <button type="submit" class="button">Analyze</button>
+          </form>
+
+          {% if error %}
+          <section class="result">
+            <div class="badge fake">{{ error }}</div>
+          </section>
+          {% endif %}
+
+          {% if result %}
+          <section class="result">
+            <div class="badge {{ 'real' if result.label == 'REAL' else 'fake' }}">
+              {{ result.label }}
+            </div>
+            <div class="confidence">
+              Confidence: <span>{{ result.confidence }}%</span>
+            </div>
+
+            <div class="section-card explanation">
+              <h3>AI Explanation</h3>
+              <p>{{ result.explanation }}</p>
+            </div>
+
+            {% if result.claim_table %}
+            <div class="section-card claim-table">
+              <h3>Claim vs Evidence</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Claim</th>
+                    <th>Evidence Present?</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in result.claim_table %}
+                  <tr>
+                    <td>{{ row.claim }}</td>
+                    <td>
+                      <span class="evidence-pill {{ 'yes' if row.evidence == 'Yes' else 'no' }}">
+                        {{ row.evidence }}
+                      </span>
+                    </td>
+                    <td>{{ row.reason }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% endif %}
+
+            <div class="section-card words">
+              <h3>Important Words</h3>
+              <div class="words-container">
+                <div class="word-box real-box">
+                  <h4>Real Indicators</h4>
+                  <p>{{ result.important_words.top_real_words | join(', ') }}</p>
+                </div>
+                <div class="word-box fake-box">
+                  <h4>Fake Indicators</h4>
+                  <p>{{ result.important_words.top_fake_words | join(', ') }}</p>
+                </div>
+              </div>
+            </div>
+
+            <form action="/annotated" method="post" class="annotated-form">
+              <input type="hidden" name="article_text" value="{{ result.article_text }}" />
+              <button type="submit" class="button secondary">View Annotated Article</button>
+            </form>
+          </section>
+          {% endif %}
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

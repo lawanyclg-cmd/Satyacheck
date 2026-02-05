@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Annotated Article - SatyaCheck</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="card">
+        <header class="header">
+          <h1>Annotated Article</h1>
+          <p>Hover over highlights to see why the sentence was flagged.</p>
+        </header>
+
+        {% if error %}
+        <section class="result">
+          <div class="badge fake">{{ error }}</div>
+        </section>
+        {% endif %}
+
+        <article class="annotated-article">
+          {{ annotated_text | safe }}
+        </article>
+
+        <div class="actions">
+          <a href="/" class="button secondary">Back to Home</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

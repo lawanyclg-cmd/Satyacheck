@@ -1,0 +1,9 @@
+flask
+gunicorn
+scikit-learn
+beautifulsoup4
+requests
+numpy
+nltk
+joblib
+markupsafe
