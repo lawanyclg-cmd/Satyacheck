@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-SatyaCheck ML model training + Flask-ready prediction utilities.
 
-This script keeps training logic separated from prediction logic so the Flask
-app can load assets once at startup and call predict_news(text) per request.
-"""
 
 from __future__ import annotations
 
